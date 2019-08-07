@@ -1,0 +1,19 @@
+# defaults file for pihole role
+
+---
+
+pihole_config_path: /etc/pihole
+pihole_install_path: /opt/pihole
+
+pihole_user: pihole
+pihole_group: pihole
+
+pihole_network_interface: eth0
+pihole_ipv4_address: 0.0.0.0
+
+# specify two dns servers of choice
+pihole_dns_servers:
+  - 8.8.8.8
+  - 1.1.1.1
+
+pihole_webinterface_password: changeme

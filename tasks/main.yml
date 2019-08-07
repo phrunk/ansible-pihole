@@ -1,0 +1,45 @@
+# tasks file for pihole role
+
+---
+
+- name: "Download pihole installer"
+  get_url:
+    url: https://install.pi-hole.net
+    dest: /tmp/install-pihole.sh
+    mode: 0740
+
+- name: Create pihole group
+  group:
+    name: "{{ pihole_group }}"
+
+- name: Create pihole user
+  user:
+    name: "{{ pihole_user }}"
+    shell: /bin/bash
+    group: "{{ pihole_group }}"
+
+- name: Create pihole configuration directory
+  file:
+    name="{{ pihole_config_path }}"
+    state=directory
+    owner="{{ pihole_user }}"
+    group="{{ pihole_group }}"
+    mode=0755
+
+- name: Create pihole configuration
+  template:
+    src="setupVars.conf.j2"
+    dest="{{ pihole_config_path }}/setupVars.conf"
+    owner=root
+    group=root
+    mode=0644
+
+- name: Install Pi-Hole
+  shell: "/tmp/install-pihole.sh --unattended"
+
+- name: Set PiHole to update every week
+  replace:
+    path: /etc/cron.d/pihole
+    regexp: '^#(.*updatePihole.*)$'
+    replace: '\1'
+    backup: yes
